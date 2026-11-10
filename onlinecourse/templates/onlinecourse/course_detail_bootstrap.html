@@ -50,7 +50,61 @@
                     </div>
                 {% endfor %}
             </div>
-            <!-- Course detail template changes go here -->
+                        {% if user.is_authenticated %}
+                <!-- Take Exam button -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <button class="btn btn-primary" type="button"
+                                data-toggle="collapse" data-target="#exam">
+                            Take Exam
+                        </button>
+                    </div>
+
+                    <!-- Collapsible exam section -->
+                    <div id="exam" class="collapse">
+                        <div class="card-body">
+                            <form>
+                                {% csrf_token %}
+
+                                <!-- Display all questions for this course -->
+                                {% for question in course.question_set.all %}
+                                    <div class="card mt-3">
+                                        <div class="card-header">
+                                            <h5>
+                                                Question {{ forloop.counter }}:
+                                                {{ question.question_text }}
+                                            </h5>
+                                        </div>
+
+                                        <div class="card-body">
+                                            <!-- Display choices for each question -->
+                                            {% for choice in question.choice_set.all %}
+                                                <div class="form-check">
+                                                    <input
+                                                        class="form-check-input"
+                                                        type="checkbox"
+                                                        name="question_{{ question.id }}"
+                                                        value="{{ choice.id }}"
+                                                        id="choice_{{ choice.id }}"
+                                                    >
+                                                    <label class="form-check-label"
+                                                           for="choice_{{ choice.id }}">
+                                                        {{ choice.choice_text }}
+                                                    </label>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </form>
+
+                            <p class="text-muted mt-3">
+                                Exam submission will be available in the next lab.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
     </div>
 </body>
 </html>
